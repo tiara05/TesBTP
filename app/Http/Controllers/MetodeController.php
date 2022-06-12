@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Metode;
+use Illuminate\Http\Request;
+use App\Helpers\ApiFormatter;  
+
+class MetodeController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $data = Metode::all();
+
+        if ($data) {
+            return ApiFormatter::createApi(200, 'Success', $data);
+        } else {
+            return ApiFormatter::createApi(400, 'Failed');
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'nama_metode' => 'required',
+            ]);
+
+            $metode = Metode::create([
+                'nama_metode' => $request->nama_metode,
+            ]);
+
+            $data = Metode::where('id', '=', $metode->id)->get();
+
+            if ($data) {
+                return ApiFormatter::createApi(200, 'Success', $data);
+            } else {
+                return ApiFormatter::createApi(400, 'Failed');
+            }
+        } catch (Exception $error) {
+            return ApiFormatter::createApi(400, 'Failed');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $data = Metode::where('id', '=', $id)->get();
+
+        if ($data) {
+            return ApiFormatter::createApi(200, 'Success', $data);
+        } else {
+            return ApiFormatter::createApi(400, 'Failed');
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'nama_metode' => 'required',
+            ]);
+
+            $metode = Metode::findOrFail($id);
+
+            $metode->update([
+                'nama_metode' => $request->nama_metode,
+            ]);
+
+            $data = Metode::where('id', '=', $metode->id)->get();
+
+            if ($data) {
+                return ApiFormatter::createApi(200, 'Success', $data);
+            } else {
+                return ApiFormatter::createApi(400, 'Failed');
+            }
+        } catch (Exception $error) {
+            return ApiFormatter::createApi(400, 'Failed');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        try {
+            $metode = Metode::findOrFail($id);
+
+            $data = $metode->delete();
+
+            if ($data) {
+                return ApiFormatter::createApi(200, 'Success Destory data');
+            } else {
+                return ApiFormatter::createApi(400, 'Failed');
+            }
+        } catch (Exception $error) {
+            return ApiFormatter::createApi(400, 'Failed');
+        }
+    }
+}
